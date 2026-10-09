@@ -304,6 +304,7 @@ function bind(){
 
   document.addEventListener("keydown", e=>{
     if (e.target.closest && e.target.closest("input,select,textarea,button")) return;
+    if ($("panel-chords-basics").hidden) return;
     if (e.code==="Space"){ e.preventDefault(); if (state.mode==="auto") (running?stop:start)(); else manualNext(); }
     else if (e.code==="ArrowRight" && state.mode==="manual"){ manualNext(); }
   });

@@ -11,7 +11,11 @@
 </head>
 <body>
 
+<nav class="tabs" role="tablist" aria-label="Sections">
+  <button type="button" class="tab" role="tab" id="tab-chords-basics" aria-controls="panel-chords-basics" aria-selected="true">Chords basics</button>
+</nav>
 
+<section class="tab-panel" role="tabpanel" id="panel-chords-basics" aria-labelledby="tab-chords-basics">
 <div class="app">
   <main class="stage" aria-live="polite">
     <div class="stage-head">
@@ -86,7 +90,9 @@
     </fieldset>
   </aside>
 </div>
+</section>
 
+<script src="tabs.js"></script>
 <script src="script.js"></script>
 
 </body>
