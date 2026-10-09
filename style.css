@@ -87,3 +87,7 @@ input[type=number]{font:inherit;font-variant-numeric:tabular-nums;width:100%;pad
 .tab[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
 .tab:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
 .tab-panel[hidden]{display:none}
+
+/* Chords 6/7/9 */
+.e-answer{color:var(--reveal);font-size:clamp(36px,8vw,80px)}
+.d-answer{font-size:clamp(24px,5.5vw,56px);letter-spacing:0}

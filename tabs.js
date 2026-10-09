@@ -9,6 +9,7 @@ function select(tab, focus){
     t.tabIndex = on ? 0 : -1;
     document.getElementById(t.getAttribute("aria-controls")).hidden = !on;
   });
+  document.dispatchEvent(new CustomEvent("tabchange", {detail:{id:tab.id}}));
   if (focus) tab.focus();
   try{ history.replaceState(null, "", "#" + tab.id.replace(/^tab-/, "")); }catch(e){}
 }

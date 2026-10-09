@@ -13,6 +13,8 @@
 
 <nav class="tabs" role="tablist" aria-label="Sections">
   <button type="button" class="tab" role="tab" id="tab-chords-basics" aria-controls="panel-chords-basics" aria-selected="true">Chords basics</button>
+  <button type="button" class="tab" role="tab" id="tab-chords-679" aria-controls="panel-chords-679" aria-selected="false">Chords 6/7/9</button>
+  <button type="button" class="tab" role="tab" id="tab-dim-chords" aria-controls="panel-dim-chords" aria-selected="false">Dim chords</button>
 </nav>
 
 <section class="tab-panel" role="tabpanel" id="panel-chords-basics" aria-labelledby="tab-chords-basics">
@@ -34,7 +36,7 @@
     <div class="controls">
       <button class="btn primary" id="startBtn" type="button">Démarrer</button>
       <button class="btn stop" id="stopBtn" type="button" disabled>Arrêter</button>
-      <button class="btn primary" id="nextBtn" type="button" hidden>Suivant</button>
+      <button class="btn" id="nextBtn" type="button">Suivant</button>
     </div>
     <p class="hint" id="hint"></p>
   </main>
@@ -92,8 +94,140 @@
 </div>
 </section>
 
+<section class="tab-panel" role="tabpanel" id="panel-chords-679" aria-labelledby="tab-chords-679" hidden>
+<div class="app">
+  <main class="stage" aria-live="polite">
+    <div class="stage-head">
+      <span class="brand">Chords 6/7/9</span>
+      <span class="counter" id="eCounter">Exemple</span>
+    </div>
+
+    <div class="chord" id="eChord">
+      <div class="chord-name" id="eName"></div>
+      <div class="chord-alt" id="eTarget"></div>
+      <div class="chord-name e-answer is-concealed" id="eAnswer"></div>
+      <p class="empty-msg" id="eEmpty" hidden>Cochez au moins une fondamentale dans les réglages.</p>
+    </div>
+
+    <div class="controls">
+      <button class="btn primary" id="eStart" type="button">Démarrer</button>
+      <button class="btn stop" id="eStop" type="button" disabled>Arrêter</button>
+      <button class="btn" id="eNext" type="button">Suivant</button>
+    </div>
+    <p class="hint"><kbd>Espace</kbd> démarrer / arrêter · <kbd>→</kbd> accord suivant</p>
+  </main>
+
+  <aside class="settings" aria-label="Réglages">
+    <h2>Réglages</h2>
+
+    <fieldset>
+      <legend>Vitesse</legend>
+      <div class="speed">
+        <label for="eDuration">Durée (s)
+          <input type="number" id="eDuration" min="1" max="120" step="0.5" value="4">
+        </label>
+        <span class="eq">⇄</span>
+        <label for="ePerMinute">Accords / min
+          <input type="number" id="ePerMinute" min="0.5" max="60" step="0.5" value="15">
+        </label>
+      </div>
+      <p class="legend-note">La correction s'affiche pendant 1,5 s après chaque accord.</p>
+    </fieldset>
+
+    <fieldset>
+      <legend>Notation</legend>
+      <div class="seg" role="group" aria-label="Notation">
+        <button type="button" id="eNotUS" aria-pressed="true">Américaine</button>
+        <button type="button" id="eNotFR" aria-pressed="false">Latine</button>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Note à trouver</legend>
+      <div id="eTargetList"></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Fondamentales</legend>
+      <div class="roots" id="eRootList"></div>
+      <div class="row-actions">
+        <button type="button" class="linkbtn" id="eRootsAll">Tout cocher</button>
+        <button type="button" class="linkbtn" id="eRootsNone">Tout décocher</button>
+      </div>
+    </fieldset>
+  </aside>
+</div>
+</section>
+
+<section class="tab-panel" role="tabpanel" id="panel-dim-chords" aria-labelledby="tab-dim-chords" hidden>
+<div class="app">
+  <main class="stage" aria-live="polite">
+    <div class="stage-head">
+      <span class="brand">Dim chords</span>
+      <span class="counter" id="dCounter">Exemple</span>
+    </div>
+
+    <div class="chord" id="dChord">
+      <div class="chord-name" id="dName"></div>
+      <div class="chord-alt" id="dAlt"></div>
+      <div class="chord-name e-answer d-answer is-concealed" id="dAnswer"></div>
+      <p class="empty-msg" id="dEmpty" hidden>Cochez au moins une note dans les réglages.</p>
+    </div>
+
+    <div class="controls">
+      <button class="btn primary" id="dStart" type="button">Démarrer</button>
+      <button class="btn stop" id="dStop" type="button" disabled>Arrêter</button>
+      <button class="btn" id="dNext" type="button">Suivant</button>
+    </div>
+    <p class="hint">Trouvez les trois autres notes de l'accord diminué.<br><kbd>Espace</kbd> démarrer / arrêter · <kbd>→</kbd> note suivante</p>
+  </main>
+
+  <aside class="settings" aria-label="Réglages">
+    <h2>Réglages</h2>
+
+    <fieldset>
+      <legend>Vitesse</legend>
+      <div class="speed">
+        <label for="dDuration">Durée (s)
+          <input type="number" id="dDuration" min="1" max="120" step="0.5" value="4">
+        </label>
+        <span class="eq">⇄</span>
+        <label for="dPerMinute">Notes / min
+          <input type="number" id="dPerMinute" min="0.5" max="60" step="0.5" value="15">
+        </label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Correction</legend>
+      <label class="check"><input type="checkbox" id="dShowCorrection" checked> Afficher la correction</label>
+      <p class="legend-note">Elle s'affiche pendant 2 s avant la note suivante.</p>
+    </fieldset>
+
+    <fieldset>
+      <legend>Notation</legend>
+      <div class="seg" role="group" aria-label="Notation">
+        <button type="button" id="dNotUS" aria-pressed="true">Américaine</button>
+        <button type="button" id="dNotFR" aria-pressed="false">Latine</button>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Notes</legend>
+      <div class="roots" id="dRootList"></div>
+      <div class="row-actions">
+        <button type="button" class="linkbtn" id="dRootsAll">Tout cocher</button>
+        <button type="button" class="linkbtn" id="dRootsNone">Tout décocher</button>
+      </div>
+    </fieldset>
+  </aside>
+</div>
+</section>
+
 <script src="tabs.js"></script>
 <script src="script.js"></script>
+<script src="chords-679.js"></script>
+<script src="dim-chords.js"></script>
 
 </body>
 </html>

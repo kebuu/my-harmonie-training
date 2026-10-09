@@ -83,6 +83,9 @@ ROOTS.forEach(r=>TYPES.forEach(t=>{
   });
 }));
 
+// Partagé avec les autres onglets
+window.Theory = {LETTERS, NATURAL, LATIN, ROOTS, ROOT_LABEL, SIMPLE, SIMPLE_SHARP, parseNote, pc};
+
 /* ---------- Affichage des noms ---------- */
 const state = {
   mode:"auto", duration:4, notation:"us",
@@ -209,14 +212,21 @@ function manualNext(){
   if (!pickNext()) current = null;
   render();
 }
+// Bouton « Suivant » : en auto, passe tout de suite à l'accord suivant (et relance le minuteur)
+function skip(){
+  if (state.mode==="manual") return manualNext();
+  if (running) return beginShow();
+  if (!pickNext()) current = null;
+  render();
+}
 function updateButtons(){
   const auto = state.mode==="auto";
-  el.start.hidden = !auto; el.stop.hidden = !auto; el.next.hidden = auto;
+  el.start.hidden = !auto; el.stop.hidden = !auto;
   el.start.disabled = running; el.stop.disabled = !running;
   el.speedBox.style.opacity = auto ? "1" : ".45";
   el.duration.disabled = el.perMinute.disabled = !auto;
   el.hint.innerHTML = auto
-    ? "<kbd>Espace</kbd> démarrer / arrêter"
+    ? "<kbd>Espace</kbd> démarrer / arrêter · <kbd>→</kbd> accord suivant"
     : "<kbd>Espace</kbd> ou <kbd>→</kbd> accord suivant";
 }
 
@@ -298,15 +308,17 @@ function bind(){
   $("rootsAll").addEventListener("click", ()=>{ ROOTS.forEach(r=>state.roots[r.id]=true); save(); syncInputs(); render(); });
   $("rootsNone").addEventListener("click", ()=>{ ROOTS.forEach(r=>state.roots[r.id]=false); save(); syncInputs(); render(); });
 
+  document.addEventListener("tabchange", stop);
+
   el.start.addEventListener("click", start);
   el.stop.addEventListener("click", stop);
-  el.next.addEventListener("click", manualNext);
+  el.next.addEventListener("click", skip);
 
   document.addEventListener("keydown", e=>{
     if (e.target.closest && e.target.closest("input,select,textarea,button")) return;
     if ($("panel-chords-basics").hidden) return;
     if (e.code==="Space"){ e.preventDefault(); if (state.mode==="auto") (running?stop:start)(); else manualNext(); }
-    else if (e.code==="ArrowRight" && state.mode==="manual"){ manualNext(); }
+    else if (e.code==="ArrowRight"){ skip(); }
   });
 }
 
