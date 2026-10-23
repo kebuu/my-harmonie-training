@@ -93,6 +93,7 @@ input[type=number]{font:inherit;font-variant-numeric:tabular-nums;width:100%;pad
 .note-pad[hidden]{display:none}
 .score{display:flex;align-items:center;gap:12px;margin-top:16px;color:var(--muted);font-size:14px}
 .score[hidden]{display:none}
+.note-pad--chords{grid-template-columns:repeat(auto-fit,minmax(140px,1fr));max-width:560px}
 .note-btn{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:12px 4px;font-weight:600;font-size:16px}
 .note-btn:disabled{opacity:1;cursor:default}
 .note-btn.is-correct{border-color:var(--ok)}

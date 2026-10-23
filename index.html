@@ -185,6 +185,11 @@
       <div class="chord-name" id="dName"></div>
       <div class="chord-alt" id="dAlt"></div>
       <div class="chord-name e-answer d-answer is-concealed" id="dAnswer"></div>
+      <div class="note-pad note-pad--chords" id="dNotePad" hidden></div>
+      <div class="score" id="dScore" hidden>
+        <span id="dScoreText"></span>
+        <button type="button" class="linkbtn" id="dScoreReset">Réinitialiser</button>
+      </div>
       <p class="empty-msg" id="dEmpty" hidden>Cochez au moins une note dans les réglages.</p>
     </div>
 
@@ -198,6 +203,15 @@
 
   <aside class="settings" aria-label="Réglages">
     <h2>Réglages</h2>
+
+    <fieldset>
+      <legend>Mode</legend>
+      <div class="seg" role="group" aria-label="Mode">
+        <button type="button" id="dModeReveal" aria-pressed="true">Révélation</button>
+        <button type="button" id="dModeQuiz" aria-pressed="false">Réponse</button>
+      </div>
+      <p class="legend-note">Mode « Réponse » : cliquez sur les trois autres notes de l'accord diminué de la note affichée. La correction est alors toujours affichée si le temps est écoulé.</p>
+    </fieldset>
 
     <fieldset>
       <legend>Vitesse</legend>
