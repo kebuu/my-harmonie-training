@@ -15,12 +15,13 @@ const TARGETS = [
   {id:"ninth",   label:"Neuvième",         sym:"9",  semi:2,  degree:1}
 ];
 const REVEAL_MS = 1500;
+const FEEDBACK_MS = 800;
 
 const CHORDS = [];
 ROOTS.forEach(r=>TYPES.forEach(t=>CHORDS.push({key:r.id+"|"+t.id, root:r, type:t})));
 
 const state = {
-  duration:4, notation:"us", target:"sixth",
+  duration:4, notation:"us", target:"sixth", mode:"reveal",
   roots:Object.fromEntries(ROOTS.map(r=>[r.id,true]))
 };
 
@@ -49,12 +50,29 @@ const $ = id => document.getElementById(id);
 const el = {
   panel:$("panel-chords-679"), chord:$("eChord"), name:$("eName"), target:$("eTarget"), answer:$("eAnswer"),
   empty:$("eEmpty"), counter:$("eCounter"), start:$("eStart"), stop:$("eStop"), next:$("eNext"),
-  duration:$("eDuration"), perMinute:$("ePerMinute"), notUS:$("eNotUS"), notFR:$("eNotFR")
+  duration:$("eDuration"), perMinute:$("ePerMinute"), notUS:$("eNotUS"), notFR:$("eNotFR"),
+  pad:$("eNotePad"), modeReveal:$("eModeReveal"), modeQuiz:$("eModeQuiz")
 };
 
 let current = CHORDS.find(c=>c.key==="Db|min");
 let count = 0;
 let revealed = false;
+let picked = null; // pitch class cliqué (mode « Réponse »), null tant que l'utilisateur n'a pas répondu
+let timedOut = false;
+const isQuiz = () => state.mode==="quiz";
+
+function renderPad(){
+  el.pad.hidden = !isQuiz();
+  const answered = picked!==null || timedOut;
+  const good = current ? pc(noteAt(current.root.main, targetDef())) : -1;
+  el.pad.querySelectorAll(".note-btn").forEach(b=>{
+    const p = +b.dataset.pc;
+    b.textContent = fmt(SIMPLE[p]);
+    b.disabled = !current || answered;
+    b.classList.toggle("is-correct", answered && p===good);
+    b.classList.toggle("is-wrong", picked!==null && p===picked && p!==good);
+  });
+}
 
 function render(){
   const ch = current;
@@ -65,7 +83,8 @@ function render(){
   el.name.textContent = chordName(ch);
   el.target.textContent = "Trouver la " + t.label.toLowerCase() + " (" + t.sym + ")";
   el.answer.textContent = fmt(noteAt(ch.root.main, t));
-  el.answer.classList.toggle("is-concealed", !revealed);
+  el.answer.classList.toggle("is-concealed", !revealed || isQuiz());
+  renderPad();
 }
 
 function pool(){ return CHORDS.filter(c=>state.roots[c.root.id]); }
@@ -74,7 +93,7 @@ function pickNext(){
   if (!p.length){ current = null; return false; }
   let choice = p[Math.floor(Math.random()*p.length)];
   if (p.length>1) while (current && choice.key===current.key) choice = p[Math.floor(Math.random()*p.length)];
-  current = choice; revealed = false; count++;
+  current = choice; revealed = false; picked = null; timedOut = false; count++;
   el.counter.textContent = "Accord n° " + count;
   return true;
 }
@@ -91,7 +110,9 @@ function tick(now){
   if (!running) return;
   if ((now - phaseStart)/phaseDur >= 1){
     if (phase==="show"){
-      phase = "reveal"; phaseStart = now; phaseDur = REVEAL_MS; revealed = true; render();
+      phase = "reveal"; phaseStart = now; phaseDur = REVEAL_MS; revealed = true;
+      if (picked===null) timedOut = true;
+      render();
     } else {
       beginShow();
     }
@@ -114,6 +135,13 @@ function skip(){
   if (!pickNext()) current = null;
   render();
 }
+// Réponse de l'utilisateur : feedback immédiat, puis accord suivant sans attendre la fin du temps imparti
+function answer(p){
+  if (!current || picked!==null || timedOut) return;
+  picked = p;
+  if (running){ phase = "reveal"; phaseStart = performance.now(); phaseDur = FEEDBACK_MS; }
+  render();
+}
 function updateButtons(){
   el.start.disabled = running; el.stop.disabled = !running;
 }
@@ -128,6 +156,7 @@ function load(){
       if (typeof s.duration==="number") state.duration = s.duration;
       if (s.notation==="us" || s.notation==="fr") state.notation = s.notation;
       if (TARGETS.some(t=>t.id===s.target)) state.target = s.target;
+      if (s.mode==="reveal" || s.mode==="quiz") state.mode = s.mode;
       if (s.roots) Object.assign(state.roots, s.roots);
     }
   }catch(e){}
@@ -146,6 +175,7 @@ function buildLists(){
     });
   }
   $("eRootList").innerHTML = html;
+  el.pad.innerHTML = SIMPLE.map((_, p)=>`<button type="button" class="note-btn" data-pc="${p}"></button>`).join("");
 }
 function rootLabel(r){
   if (ROOT_LABEL[r.id]){
@@ -164,6 +194,8 @@ function syncInputs(){
   el.perMinute.value = round1(60/state.duration);
   el.notUS.setAttribute("aria-pressed", state.notation==="us");
   el.notFR.setAttribute("aria-pressed", state.notation==="fr");
+  el.modeReveal.setAttribute("aria-pressed", !isQuiz());
+  el.modeQuiz.setAttribute("aria-pressed", isQuiz());
 }
 
 function bind(){
@@ -188,6 +220,12 @@ function bind(){
 
   el.notUS.addEventListener("click", ()=>{ state.notation="us"; save(); syncInputs(); render(); });
   el.notFR.addEventListener("click", ()=>{ state.notation="fr"; save(); syncInputs(); render(); });
+  el.modeReveal.addEventListener("click", ()=>{ state.mode="reveal"; save(); syncInputs(); render(); });
+  el.modeQuiz.addEventListener("click", ()=>{ state.mode="quiz"; save(); syncInputs(); render(); });
+  el.pad.addEventListener("click", e=>{
+    const b = e.target.closest(".note-btn");
+    if (b) answer(+b.dataset.pc);
+  });
   $("eRootsAll").addEventListener("click", ()=>{ ROOTS.forEach(r=>state.roots[r.id]=true); save(); syncInputs(); render(); });
   $("eRootsNone").addEventListener("click", ()=>{ ROOTS.forEach(r=>state.roots[r.id]=false); save(); syncInputs(); render(); });
 

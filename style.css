@@ -1,7 +1,7 @@
 :root{
   --bg:#F2F3F6; --surface:#FFFFFF; --ink:#15171C; --muted:#5E6472; --line:#D9DCE3;
   --accent:#2F47A6; --accent-ink:#FFFFFF; --lane-white:#FFFFFF; --lane-black:#E4E6EC;
-  --stop:#B3363F; --reveal:#C98A12;
+  --stop:#B3363F; --reveal:#C98A12; --ok:#2E8B3D;
   --c-yellow:#E0AC1C; --c-orange:#E0702F; --c-blue:#2B9FD6; --c-pink:#D23C98;
   --c-green:#3A9A48; --c-red:#D9434F; --c-purple:#8650BD; --c-gray:#8B8F99;
   --display:"Sora", "Segoe UI", system-ui, sans-serif;
@@ -12,14 +12,14 @@
   :root:not([data-theme="light"]){
     --bg:#111318; --surface:#1A1D24; --ink:#ECEEF3; --muted:#9BA1AE; --line:#2D323D;
     --accent:#8FA3FF; --accent-ink:#0E1330; --lane-white:#252A33; --lane-black:#0B0D11;
-    --stop:#F07A82; --reveal:#F2BC4B; --c-gray:#A3A8B3; --c-purple:#A57BE0;
+    --stop:#F07A82; --reveal:#F2BC4B; --ok:#5FD07A; --c-gray:#A3A8B3; --c-purple:#A57BE0;
     color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
   --bg:#111318; --surface:#1A1D24; --ink:#ECEEF3; --muted:#9BA1AE; --line:#2D323D;
   --accent:#8FA3FF; --accent-ink:#0E1330; --lane-white:#252A33; --lane-black:#0B0D11;
-  --stop:#F07A82; --reveal:#F2BC4B; --c-gray:#A3A8B3; --c-purple:#A57BE0;
+  --stop:#F07A82; --reveal:#F2BC4B; --ok:#5FD07A; --c-gray:#A3A8B3; --c-purple:#A57BE0;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -89,5 +89,11 @@ input[type=number]{font:inherit;font-variant-numeric:tabular-nums;width:100%;pad
 .tab-panel[hidden]{display:none}
 
 /* Chords 6/7/9 */
+.note-pad{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:20px;width:100%;max-width:420px}
+.note-pad[hidden]{display:none}
+.note-btn{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:12px 4px;font-weight:600;font-size:16px}
+.note-btn:disabled{opacity:1;cursor:default}
+.note-btn.is-correct{border-color:var(--ok)}
+.note-btn.is-wrong{border-color:var(--stop)}
 .e-answer{color:var(--reveal);font-size:clamp(36px,8vw,80px)}
 .d-answer{font-size:clamp(24px,5.5vw,56px);letter-spacing:0}

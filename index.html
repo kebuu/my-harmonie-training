@@ -106,6 +106,7 @@
       <div class="chord-name" id="eName"></div>
       <div class="chord-alt" id="eTarget"></div>
       <div class="chord-name e-answer is-concealed" id="eAnswer"></div>
+      <div class="note-pad" id="eNotePad" hidden></div>
       <p class="empty-msg" id="eEmpty" hidden>Cochez au moins une fondamentale dans les réglages.</p>
     </div>
 
@@ -119,6 +120,15 @@
 
   <aside class="settings" aria-label="Réglages">
     <h2>Réglages</h2>
+
+    <fieldset>
+      <legend>Mode</legend>
+      <div class="seg" role="group" aria-label="Mode">
+        <button type="button" id="eModeReveal" aria-pressed="true">Révélation</button>
+        <button type="button" id="eModeQuiz" aria-pressed="false">Réponse</button>
+      </div>
+      <p class="legend-note">Mode « Réponse » : cliquez sur la bonne note avant la fin du temps imparti.</p>
+    </fieldset>
 
     <fieldset>
       <legend>Vitesse</legend>
