@@ -21,7 +21,7 @@ const CHORDS = [];
 ROOTS.forEach(r=>TYPES.forEach(t=>CHORDS.push({key:r.id+"|"+t.id, root:r, type:t})));
 
 const state = {
-  duration:4, notation:"us", target:"sixth", mode:"reveal",
+  duration:4, notation:"us", target:"sixth", mode:"reveal", score:{ok:0, total:0},
   roots:Object.fromEntries(ROOTS.map(r=>[r.id,true]))
 };
 
@@ -51,7 +51,7 @@ const el = {
   panel:$("panel-chords-679"), chord:$("eChord"), name:$("eName"), target:$("eTarget"), answer:$("eAnswer"),
   empty:$("eEmpty"), counter:$("eCounter"), start:$("eStart"), stop:$("eStop"), next:$("eNext"),
   duration:$("eDuration"), perMinute:$("ePerMinute"), notUS:$("eNotUS"), notFR:$("eNotFR"),
-  pad:$("eNotePad"), modeReveal:$("eModeReveal"), modeQuiz:$("eModeQuiz")
+  pad:$("eNotePad"), score:$("eScore"), scoreText:$("eScoreText"), modeReveal:$("eModeReveal"), modeQuiz:$("eModeQuiz")
 };
 
 let current = CHORDS.find(c=>c.key==="Db|min");
@@ -61,8 +61,16 @@ let picked = null; // pitch class cliqué (mode « Réponse »), null tant que l
 let timedOut = false;
 const isQuiz = () => state.mode==="quiz";
 
+function renderScore(){
+  const {ok, total} = state.score;
+  el.score.hidden = !isQuiz();
+  el.scoreText.textContent = total
+    ? "Réussite : " + Math.round(100*ok/total) + " % (" + ok + " / " + total + ")"
+    : "Réussite : —";
+}
 function renderPad(){
   el.pad.hidden = !isQuiz();
+  renderScore();
   const answered = picked!==null || timedOut;
   const good = current ? pc(noteAt(current.root.main, targetDef())) : -1;
   el.pad.querySelectorAll(".note-btn").forEach(b=>{
@@ -111,7 +119,7 @@ function tick(now){
   if ((now - phaseStart)/phaseDur >= 1){
     if (phase==="show"){
       phase = "reveal"; phaseStart = now; phaseDur = REVEAL_MS; revealed = true;
-      if (picked===null) timedOut = true;
+      if (picked===null){ timedOut = true; if (isQuiz()){ state.score.total++; save(); } }
       render();
     } else {
       beginShow();
@@ -139,6 +147,9 @@ function skip(){
 function answer(p){
   if (!current || picked!==null || timedOut) return;
   picked = p;
+  state.score.total++;
+  if (p===pc(noteAt(current.root.main, targetDef()))) state.score.ok++;
+  save();
   if (running){ phase = "reveal"; phaseStart = performance.now(); phaseDur = FEEDBACK_MS; }
   render();
 }
@@ -157,6 +168,7 @@ function load(){
       if (s.notation==="us" || s.notation==="fr") state.notation = s.notation;
       if (TARGETS.some(t=>t.id===s.target)) state.target = s.target;
       if (s.mode==="reveal" || s.mode==="quiz") state.mode = s.mode;
+      if (s.score && s.score.total>=s.score.ok && s.score.ok>=0) state.score = {ok:s.score.ok, total:s.score.total};
       if (s.roots) Object.assign(state.roots, s.roots);
     }
   }catch(e){}
@@ -222,6 +234,7 @@ function bind(){
   el.notFR.addEventListener("click", ()=>{ state.notation="fr"; save(); syncInputs(); render(); });
   el.modeReveal.addEventListener("click", ()=>{ state.mode="reveal"; save(); syncInputs(); render(); });
   el.modeQuiz.addEventListener("click", ()=>{ state.mode="quiz"; save(); syncInputs(); render(); });
+  $("eScoreReset").addEventListener("click", ()=>{ state.score = {ok:0, total:0}; save(); renderScore(); });
   el.pad.addEventListener("click", e=>{
     const b = e.target.closest(".note-btn");
     if (b) answer(+b.dataset.pc);
