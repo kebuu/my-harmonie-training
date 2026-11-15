@@ -107,6 +107,7 @@
       <div class="chord-alt" id="eTarget"></div>
       <div class="chord-name e-answer is-concealed" id="eAnswer"></div>
       <div class="note-pad" id="eNotePad" hidden></div>
+      <div class="legend-note" id="eHeard" aria-live="polite"></div>
       <div class="score" id="eScore" hidden>
         <span id="eScoreText"></span>
         <button type="button" class="linkbtn" id="eScoreReset">Réinitialiser</button>
@@ -132,6 +133,13 @@
         <button type="button" id="eModeQuiz" aria-pressed="false">Réponse</button>
       </div>
       <p class="legend-note">Mode « Réponse » : cliquez sur la bonne note avant la fin du temps imparti.</p>
+    </fieldset>
+
+    <fieldset>
+      <legend>Voix</legend>
+      <label class="check"><input type="checkbox" id="eVoice"> Question et réponse à l'oral</label>
+      <p class="legend-note">La question est dite à voix haute. En mode « Réponse », dites le nom de la note (« sol dièse »…) ou cliquez ; une mauvaise réponse est corrigée à l'oral. Le micro est demandé au clic sur Démarrer.</p>
+      <p class="legend-note" id="eVoiceMsg" role="status"></p>
     </fieldset>
 
     <fieldset>
